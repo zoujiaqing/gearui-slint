@@ -39,7 +39,7 @@ type ItemRendererRef<'a> = &'a mut dyn i_slint_core::item_rendering::ItemRendere
 /// GroupBox 控件的公共 API
 pub struct GroupBox {
     pub title: SharedString,
-    pub child: Option<crate::ViewWrapper>,
+    pub child: Option<Box<crate::ViewWrapper>>,
 }
 
 impl Default for GroupBox {
@@ -68,7 +68,7 @@ impl GroupBox {
 
     /// 添加子元素
     pub fn with_child<V: Into<crate::ViewWrapper>>(mut self, child: V) -> Self {
-        self.child = Some(child.into());
+        self.child = Some(Box::new(child.into()));
         self
     }
 

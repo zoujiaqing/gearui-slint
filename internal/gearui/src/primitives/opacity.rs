@@ -34,7 +34,7 @@ type ItemRendererRef<'a> = &'a mut dyn i_slint_core::item_rendering::ItemRendere
 /// Opacity 元素的公共 API
 pub struct Opacity {
     pub opacity: f32,
-    pub child: Option<crate::ViewWrapper>,
+    pub child: Option<Box<crate::ViewWrapper>>,
 }
 
 impl Default for Opacity {
@@ -63,7 +63,7 @@ impl Opacity {
 
     /// 添加子元素
     pub fn with_child<V: Into<crate::ViewWrapper>>(mut self, child: V) -> Self {
-        self.child = Some(child.into());
+        self.child = Some(Box::new(child.into()));
         self
     }
 
