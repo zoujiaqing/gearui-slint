@@ -13,18 +13,16 @@
 
 use i_slint_core::{
     ItemVTable_static, SharedString, declare_item_vtable,
-    graphics::{Brush, Color, FontRequest},
     input::{
         FocusEvent, FocusEventResult, InputEventFilterResult, InputEventResult, KeyEvent,
         KeyEventResult, MouseEvent,
     },
     item_rendering::CachedRenderingData,
     items::{
-        Item, ItemConsts, ItemRc, ItemVTable, RenderingResult, TextHorizontalAlignment,
-        TextVerticalAlignment,
+        Item, ItemConsts, ItemRc, ItemVTable, RenderingResult,
     },
     layout::{LayoutInfo, Orientation},
-    lengths::{LogicalLength, LogicalPoint, LogicalRect, LogicalSize},
+    lengths::{LogicalLength, LogicalRect, LogicalSize},
     properties::Property,
     window::WindowAdapterRc,
 };
@@ -183,9 +181,9 @@ impl Item for GroupBoxItem {
 
     fn render(
         self: Pin<&Self>,
-        backend: &mut &mut dyn i_slint_core::item_rendering::ItemRenderer,
+        _backend: &mut &mut dyn i_slint_core::item_rendering::ItemRenderer,
         _self_rc: &ItemRc,
-        size: LogicalSize,
+        _size: LogicalSize,
     ) -> RenderingResult {
         // Note: Simplified rendering implementation
         // The draw_rect_outline and draw_text methods may not be available in all backends

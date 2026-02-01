@@ -35,7 +35,7 @@ use i_slint_core::{
     },
     item_rendering::{CachedRenderingData, ItemRenderer, RenderText},
     items::{
-        Item, ItemConsts, ItemRc, ItemRef, ItemVTable, RenderingResult, TextHorizontalAlignment,
+        Item, ItemConsts, ItemRc, ItemVTable, RenderingResult, TextHorizontalAlignment,
         TextOverflow, TextStrokeStyle, TextVerticalAlignment, TextWrap, WindowItem,
     },
     layout::{LayoutInfo, Orientation},
@@ -45,7 +45,6 @@ use i_slint_core::{
 };
 use i_slint_core_macros::*;
 use std::rc::Rc;
-use vtable::HasStaticVTable;
 
 // Required for VTable macro
 type ItemRendererRef<'a> = &'a mut dyn i_slint_core::item_rendering::ItemRenderer;

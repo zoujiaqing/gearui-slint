@@ -219,7 +219,7 @@ impl ViewWrapper {
                 let item = switch.create_item();
                 (Box::new(item), crate::interactive::switch::SwitchItem::static_vtable())
             }
-            ViewWrapper::SwitchComposite(switch) => {
+            ViewWrapper::SwitchComposite(_switch) => {
                 // SwitchComposite uses MultiItemTree, so we use a placeholder VerticalLayout item
                 let item = crate::layout::VerticalLayout::new().create_item();
                 (Box::new(item), crate::layout::vertical::VerticalLayoutItem::static_vtable())
@@ -420,18 +420,10 @@ impl From<primitives::Opacity> for ViewWrapper {
 }
 
 use i_slint_core::{
-    SharedString, SharedVector,
-    accessibility::{AccessibilityAction, SupportedAccessibilityAction},
-    api::PlatformError,
-    item_tree::{ItemTree, ItemTreeNode, ItemTreeRc, ItemTreeVTable, TraversalOrder},
-    items::{AccessibleRole, Item, ItemRc, ItemRef, ItemVTable},
-    layout::{LayoutInfo, Orientation},
-    lengths::{LogicalPoint, LogicalRect, LogicalSize},
-    slice::Slice,
-    window::WindowAdapterRc,
+    item_tree::ItemTreeRc,
+    items::{Item, ItemRc, ItemVTable},
 };
-use std::ptr::NonNull;
-use vtable::{HasStaticVTable, VRc, VRef};
+use vtable::HasStaticVTable;
 
 /// Core trait for all GearUI controls - provides unified conversion capabilities
 ///
@@ -544,7 +536,7 @@ pub mod item_tree_integration {
         ItemVisitorRefMut, ItemVisitorVTable, ItemWeak, TraversalOrder, VisitChildrenResult,
     };
     use i_slint_core::items::{AccessibleRole, ItemRef, ItemVTable};
-    use i_slint_core::layout::{LayoutInfo, LayoutItemInfo, Orientation};
+    use i_slint_core::layout::{LayoutInfo, Orientation};
     use i_slint_core::lengths::{LogicalPoint, LogicalRect, LogicalSize};
     use i_slint_core::slice::Slice;
     use i_slint_core::window::WindowAdapterRc;
@@ -991,7 +983,7 @@ pub mod item_tree_integration {
                     // 🎯 **关键修复**：子控件使用自己的尺寸和位置，不再被强制全屏
                     // 我们需要从子控件的属性中读取实际的几何信息
                     unsafe {
-                        let child_item_ref = self.get_item_ref(1);
+                        let _child_item_ref = self.get_item_ref(1);
 
                         // 尝试从 Item 中获取位置和尺寸属性
                         // 这是一个简化的实现，实际中应该通过 VTable 调用 bounding_rect
@@ -1286,7 +1278,7 @@ pub mod item_tree_integration {
         /// 🚨 **架构修复** - 使用 CompositeItemTree 替代复杂的嵌套结构
         /// 对于嵌套布局，我们应该使用更简单的 CompositeItemTree 方法
         pub fn new<T: Item + HasStaticVTable<ItemVTable> + 'static>(
-            layout_item: T,
+            _layout_item: T,
             child_trees: Vec<ItemTreeRc>,
         ) -> Self {
             println!("🚨 MultiItemTree::new 已弃用 - 对于嵌套布局请使用 CompositeItemTree");
@@ -1872,7 +1864,7 @@ pub mod item_tree_integration {
             }
         }
 
-        fn get_item_ref(self: Pin<&Self>, index: u32) -> Pin<ItemRef> {
+        fn get_item_ref(self: Pin<&Self>, index: u32) -> Pin<ItemRef<'_>> {
             // 🎯 关键修复：新的索引结构
             // Index 0: WindowItem (根节点)
             // Index 1: Layout item (布局控件)
@@ -2046,34 +2038,34 @@ pub mod item_tree_integration {
             }
         }
 
-        fn accessible_role(self: Pin<&Self>, item_index: u32) -> AccessibleRole {
+        fn accessible_role(self: Pin<&Self>, _item_index: u32) -> AccessibleRole {
             AccessibleRole::default()
         }
 
         fn accessible_string_property(
             self: Pin<&Self>,
-            item_index: u32,
+            _item_index: u32,
             _what: AccessibleStringProperty,
-            result: &mut SharedString,
+            _result: &mut SharedString,
         ) -> bool {
             false
         }
 
-        fn accessibility_action(self: Pin<&Self>, item_index: u32, _action: &AccessibilityAction) {
+        fn accessibility_action(self: Pin<&Self>, _item_index: u32, _action: &AccessibilityAction) {
             // 简化实现：不处理无障碍动作
         }
 
         fn supported_accessibility_actions(
             self: Pin<&Self>,
-            item_index: u32,
+            _item_index: u32,
         ) -> SupportedAccessibilityAction {
             SupportedAccessibilityAction::default()
         }
 
         fn item_element_infos(
             self: Pin<&Self>,
-            item_index: u32,
-            result: &mut SharedString,
+            _item_index: u32,
+            _result: &mut SharedString,
         ) -> bool {
             false
         }

@@ -176,7 +176,7 @@ impl Item for OpacityItem {
 
     fn render(
         self: Pin<&Self>,
-        backend: &mut &mut dyn i_slint_core::item_rendering::ItemRenderer,
+        _backend: &mut &mut dyn i_slint_core::item_rendering::ItemRenderer,
         _self_rc: &ItemRc,
         _size: LogicalSize,
     ) -> RenderingResult {

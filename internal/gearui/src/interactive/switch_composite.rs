@@ -4,7 +4,6 @@
 use crate::primitives::Rectangle;
 use crate::{View, ViewWrapper};
 use i_slint_core::graphics::{Brush, Color};
-use i_slint_core::lengths::LogicalLength;
 use std::rc::Rc;
 
 /// Switch 公共API - 纯Rust UIKit风格

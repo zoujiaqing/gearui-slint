@@ -22,7 +22,7 @@ use i_slint_core::{
     item_rendering::CachedRenderingData,
     items::{Item, ItemConsts, ItemRc, ItemVTable, RenderingResult},
     layout::{LayoutInfo, Orientation},
-    lengths::{LogicalLength, LogicalPoint, LogicalRect, LogicalSize},
+    lengths::{LogicalLength, LogicalRect, LogicalSize},
     properties::Property,
     window::WindowAdapterRc,
 };

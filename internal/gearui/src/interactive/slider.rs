@@ -37,7 +37,7 @@ let slider = Slider::new()
 use const_field_offset::FieldOffsets;
 use core::pin::Pin;
 use i_slint_core::{
-    Callback, ItemVTable_static, Property, SharedString, declare_item_vtable,
+    Callback, ItemVTable_static, Property, declare_item_vtable,
     input::{
         FocusEvent, FocusEventResult, InputEventFilterResult, InputEventResult, KeyEvent,
         KeyEventResult, MouseEvent,
@@ -257,7 +257,7 @@ impl Item for SliderItem {
     fn render(
         self: Pin<&Self>,
         backend: &mut &mut dyn ItemRenderer,
-        self_rc: &ItemRc,
+        _self_rc: &ItemRc,
         size: LogicalSize,
     ) -> RenderingResult {
         println!("🎯 🔥 SliderItem::render called! size: {}x{}", size.width, size.height);
@@ -270,7 +270,7 @@ impl Item for SliderItem {
         let orientation_pin = unsafe { Pin::new_unchecked(&self.orientation) };
         let has_focus_pin = unsafe { Pin::new_unchecked(&self.has_focus) };
 
-        let enabled = enabled_pin.get();
+        let _enabled = enabled_pin.get();
         let value = value_pin.get();
         let min_value = min_pin.get();
         let max_value = max_pin.get();

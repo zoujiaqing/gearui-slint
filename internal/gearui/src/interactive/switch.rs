@@ -14,7 +14,7 @@
 //! - ✅ 无障碍支持
 
 use i_slint_core::{
-    Callback, ItemVTable_static, SharedString, declare_item_vtable,
+    Callback, ItemVTable_static, declare_item_vtable,
     graphics::{Brush, Color},
     input::{
         FocusEvent, FocusEventResult, InputEventFilterResult, InputEventResult, KeyEvent,
@@ -23,7 +23,7 @@ use i_slint_core::{
     item_rendering::CachedRenderingData,
     items::{Item, ItemConsts, ItemRc, ItemVTable, RenderingResult, VoidArg},
     layout::{LayoutInfo, Orientation},
-    lengths::{LogicalLength, LogicalPoint, LogicalRect, LogicalSize},
+    lengths::{LogicalLength, LogicalRect, LogicalSize},
     platform::PointerEventButton,
     properties::Property,
     window::WindowAdapterRc,

@@ -53,7 +53,6 @@ use i_slint_core::{
     window::{WindowAdapter, WindowAdapterRc},
 };
 use i_slint_core_macros::*;
-use std::rc::Rc;
 
 // Required for VTable macro and types
 type ItemRendererRef<'a> = &'a mut dyn i_slint_core::item_rendering::ItemRenderer;

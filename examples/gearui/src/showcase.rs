@@ -7,7 +7,7 @@ use std::env;
 fn test_toucharea_overlay() {
     println!("🎯 TouchArea 叠加测试：在透明交互区域上显示红色方块");
 
-    use i_slint_core::SharedString;
+    
     use i_slint_core::graphics::{Brush, Color};
     use i_slint_core::items::MouseCursor;
     use i_slint_gearui::RootView;

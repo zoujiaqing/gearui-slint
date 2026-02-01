@@ -20,6 +20,7 @@ fn create_title(title: &str) -> Text {
 }
 
 /// 创建描述文本
+#[allow(dead_code)]
 fn create_description(text: &str) -> Text {
     Text::new()
         .with_text(SharedString::from(text))
@@ -321,12 +322,12 @@ fn create_layout_section() -> VerticalLayout {
     }
 
     // GroupBox 示例
-    let groupbox_title = Text::new()
+    let _groupbox_title = Text::new()
         .with_text(SharedString::from("GroupBox"))
         .with_font_size(LogicalLength::new(14.0))
         .with_color(Brush::SolidColor(Color::from_rgb_u8(220, 220, 220)));
 
-    let groupbox_content = HorizontalLayout::new()
+    let _groupbox_content = HorizontalLayout::new()
         .with_spacing(10.0)
         .with_child(
             Rectangle::new()

@@ -45,7 +45,7 @@ use i_slint_core::{
         FocusEvent, FocusEventResult, InputEventFilterResult, InputEventResult, KeyEvent,
         KeyEventResult, KeyEventType, MouseEvent,
     },
-    item_rendering::{CachedRenderingData, ItemRenderer, RenderText},
+    item_rendering::{CachedRenderingData, ItemRenderer},
     items::{Item, ItemConsts, ItemRc, ItemVTable, RenderingResult, VoidArg},
     layout::{LayoutInfo, Orientation},
     lengths::{LogicalLength, LogicalRect, LogicalSize},

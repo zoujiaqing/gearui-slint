@@ -154,9 +154,9 @@ impl Item for ClipItem {
 
     fn render(
         self: Pin<&Self>,
-        backend: &mut &mut dyn i_slint_core::item_rendering::ItemRenderer,
+        _backend: &mut &mut dyn i_slint_core::item_rendering::ItemRenderer,
         _self_rc: &ItemRc,
-        size: LogicalSize,
+        _size: LogicalSize,
     ) -> RenderingResult {
         // Note: Simplified rendering implementation
         // The save_state, clip_rect, clip_rounded_rect methods may not be available in all backends

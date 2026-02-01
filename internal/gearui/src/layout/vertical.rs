@@ -306,7 +306,7 @@ impl crate::View for VerticalLayout {
     type ItemType = VerticalLayoutItem;
 
     fn create_item(self) -> Self::ItemType {
-        let mut item = VerticalLayoutItem {
+        let item = VerticalLayoutItem {
             width: Property::default(),
             height: Property::default(),
             x: Property::default(),
