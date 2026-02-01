@@ -1,0 +1,31 @@
+# Copyright © SixtyFPS GmbH <info@slint.dev>
+# SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-2.0 OR LicenseRef-Slint-Software-3.0
+
+[package]
+name = "gearui-examples"
+version.workspace = true
+authors = ["GearUI Contributors"]
+edition.workspace = true
+publish = false
+
+[[bin]]
+name = "showcase"
+path = "src/showcase.rs"
+
+[[bin]]
+name = "test_layouts"
+path = "src/test_layouts.rs"
+
+[[bin]]
+name = "test_switch_composite"
+path = "src/test_switch_composite.rs"
+
+[[bin]]
+name = "gallery"
+path = "src/gallery.rs"
+
+[dependencies]
+i-slint-gearui.workspace = true
+i-slint-core.workspace = true
+i-slint-backend-winit = { workspace = true, features = ["renderer-software"] }
+i-slint-backend-selector = { workspace = true, features = ["backend-winit", "renderer-software"] }

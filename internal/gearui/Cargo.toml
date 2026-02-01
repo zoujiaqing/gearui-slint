@@ -1,0 +1,27 @@
+[package]
+name = "i-slint-gearui"
+version.workspace = true
+authors = ["GearUI Contributors"]
+edition.workspace = true
+license.workspace = true
+description = "GearUI - Pure Rust UI Component Library built on Slint Engine"
+repository.workspace = true
+homepage.workspace = true
+categories = ["gui", "development-tools"]
+keywords = ["gui", "ui", "toolkit", "graphics", "rust"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+i-slint-core = { workspace = true, features = ["default"] }
+i-slint-core-macros = { workspace = true, features = ["default"] }
+i-slint-backend-selector = { workspace = true, features = ["renderer-software"] }
+
+const-field-offset = { path = "../../helper_crates/const-field-offset" }
+vtable.workspace = true
+
+[features]
+default = ["std"]
+std = ["i-slint-core/std"]
+rtti = ["i-slint-core/rtti"]
