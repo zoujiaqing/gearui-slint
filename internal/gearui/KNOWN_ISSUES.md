@@ -19,13 +19,18 @@
 
 **已验证**:
 - ✅ 单个组件可以正常渲染
+  - `cargo run --bin showcase` - 显示 CheckBox "同意用户协议" ✓
   - `cargo run --bin showcase rectangle` - 显示红色矩形 ✓
   - `cargo run --bin showcase text` - 显示文本 ✓
-  - `cargo run --bin showcase button` - 显示按钮 ✓
+  - `cargo run --bin showcase button` - 显示蓝色按钮 "点击我 Click Me!" ✓
+  - `cargo run --bin showcase slider` - 显示滑动条 ✓
 
-- ❌ 布局组件渲染失败
+- ❌ 布局组件渲染失败（子元素未显示）
   - `cargo run --bin gallery` - 黑屏 ✗
   - `cargo run --bin gallery_simple` - 黑屏 ✗
+  - `cargo run --bin test_layouts` - 黑屏 ✗
+  - `cargo run --bin showcase vstack` - 黑屏 ✗
+  - `cargo run --bin showcase hstack` - 黑屏 ✗
 
 **日志分析**:
 ```
