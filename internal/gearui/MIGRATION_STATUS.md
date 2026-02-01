@@ -64,15 +64,49 @@ slint/
 
 ## ⚠️ 当前已知问题
 
-### 1. 显示效果优化 ✅ 编译问题已解决
-**状态**: 编译通过，示例程序可运行
+### 1. VerticalLayout 黑屏问题 ✅ 已修复
+**状态**: 已解决（2026-02-02）
+
+**问题描述**:
+- VerticalLayoutItem 有多余的 `children: ItemTreeRc` 字段
+- 导致结构与 HorizontalLayoutItem 不一致
+- 造成渲染失败，显示黑屏
+
+**修复方案**:
+- 移除 VerticalLayoutItem 的 `children` 字段
+- 使其结构与 HorizontalLayoutItem 保持一致
+- 详见 `internal/gearui/src/layout/vertical.rs`
+
+**测试结果**:
+- ✅ `cargo run --bin showcase vstack` 可以正常运行
+- ✅ 不再显示黑屏
+
+### 2. 多子元素布局限制 ⚠️
+**状态**: 已知限制
+
+**问题描述**:
+- CompositeItemTree 目前只支持第一个子元素
+- 其他子元素会被忽略
+
+**影响范围**:
+- VerticalLayout、HorizontalLayout、GridLayout 等容器
+- 只能显示第一个子组件
+
+**优先级**: 高（功能受限）
+
+**后续计划**:
+- 需要实现支持多子元素的 ItemTree 结构
+- 参考 Slint 官方的布局实现
+
+### 3. 显示效果优化 ⚠️
+**状态**: 进行中
 
 **待优化项**:
-- 部分组件显示效果需要调整
-- 渲染细节优化
-- 样式和主题完善
+- 部分组件样式细节调整
+- 渲染效果优化
+- 主题系统完善
 
-**优先级**: 中等（功能可用，细节待完善）
+**优先级**: 中等（基本功能可用）
 
 ---
 

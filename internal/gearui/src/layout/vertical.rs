@@ -37,16 +37,10 @@ type ItemRendererRef<'a> = &'a mut dyn i_slint_core::item_rendering::ItemRendere
 
 /// Layer 1: Core VerticalLayout Item Implementation
 ///
-/// 🎯 **递归 ItemTree 架构** - 持有子树的布局控件
-///
 /// 实现 Item trait，提供实际的垂直布局逻辑。
 /// 字段名和默认值完全匹配 Slint 的 VerticalLayout 规范。
-///
-/// **关键架构**：
-/// - 持有 `children: ItemTreeRc` 子树
-/// - `visit_children_item()` 委托给子树，避免死循环
 #[repr(C)]
-#[derive(FieldOffsets, SlintElement)]
+#[derive(FieldOffsets, Default, SlintElement)]
 #[pin]
 pub struct VerticalLayoutItem {
     /// 🎯 **必需的位置和尺寸属性** - 所有 Slint Item 都需要这些
@@ -63,27 +57,6 @@ pub struct VerticalLayoutItem {
     pub alignment: Property<LayoutAlignment>,
     /// Cached rendering data required by Slint
     pub cached_rendering_data: CachedRenderingData,
-
-    /// 🎯 **递归 ItemTree 架构** - 子树（核心）
-    pub children: std::rc::Rc<dyn i_slint_core::item_tree::ItemTree>,
-}
-
-impl Default for VerticalLayoutItem {
-    fn default() -> Self {
-        // 创建一个空的 CompositeItemTree 作为默认子树
-        let empty_tree = crate::item_tree_integration::create_empty_item_tree();
-
-        Self {
-            width: Property::default(),
-            height: Property::default(),
-            x: Property::default(),
-            y: Property::default(),
-            spacing: Property::default(),
-            alignment: Property::default(),
-            cached_rendering_data: CachedRenderingData::default(),
-            children: empty_tree,
-        }
-    }
 }
 
 impl Item for VerticalLayoutItem {
@@ -207,9 +180,6 @@ pub struct VerticalLayout {
 
     // 🎯 Phase 8: 子控件管理系统
     children: Vec<crate::ViewWrapper>,
-
-    // 🎯 **递归 ItemTree 架构** - 持有子树
-    internal_item_tree: Option<std::rc::Rc<dyn i_slint_core::item_tree::ItemTree>>,
 }
 
 impl VerticalLayout {
@@ -222,8 +192,7 @@ impl VerticalLayout {
             height: LogicalLength::new(0.0),
             x: LogicalLength::new(0.0),
             y: LogicalLength::new(0.0),
-            children: Vec::new(),     // 🎯 Phase 8: 初始化子控件列表
-            internal_item_tree: None, // 🎯 **递归 ItemTree 架构** - 初始化为空
+            children: Vec::new(), // 🎯 Phase 8: 初始化子控件列表
         }
     }
 
@@ -337,10 +306,6 @@ impl crate::View for VerticalLayout {
     type ItemType = VerticalLayoutItem;
 
     fn create_item(self) -> Self::ItemType {
-        // ✅ **递归 ItemTree 架构** - 使用构建的子树
-        let children =
-            self.internal_item_tree.expect("build() must be called before create_item()");
-
         let mut item = VerticalLayoutItem {
             width: Property::default(),
             height: Property::default(),
@@ -349,7 +314,6 @@ impl crate::View for VerticalLayout {
             spacing: Property::default(),
             alignment: Property::default(),
             cached_rendering_data: CachedRenderingData::default(),
-            children,
         };
 
         // 设置属性
@@ -365,39 +329,34 @@ impl crate::View for VerticalLayout {
         item
     }
 
-    /// ✅ **递归 ItemTree 架构** - 构建子树
+    /// ✅ 递归构建所有子控件
     ///
-    /// 按照您的模板实现：
-    /// 1. 构建所有子控件
-    /// 2. 创建子树 ItemTreeRc
-    /// 3. 存储在 internal_item_tree 中
-    fn build(mut self) -> Self {
+    /// 调用每个子控件的 build() 方法，实现深度优先构建
+    fn build(self) -> Self {
         let children_count = self.children.len();
         println!("🎯 VerticalLayout::build() - 递归构建 {} 个子控件", children_count);
 
-        if children_count == 0 {
-            // 没有子控件，创建空树
-            self.internal_item_tree = Some(crate::item_tree_integration::create_empty_item_tree());
-        } else {
-            // 构建所有子控件
-            let built_children: Vec<crate::ViewWrapper> =
-                self.children.into_iter().map(|child| child.build()).collect();
+        // 🎯 **关键修复**：递归构建所有子控件
+        let built_children = self
+            .children
+            .into_iter()
+            .enumerate()
+            .map(|(i, child)| {
+                println!("🎯   构建子控件 {} / {}", i + 1, children_count);
 
-            // 暂时使用 CompositeItemTree，虽然只处理第一个控件，但至少能显示内容
-            let item_tree =
-                crate::item_tree_integration::CompositeItemTree::build_from(built_children);
-            self.internal_item_tree = Some(std::rc::Rc::new(item_tree));
-        }
+                // ✅ 调用 ViewWrapper 的 build() 方法，实现递归构建
+                child.build()
+            })
+            .collect();
 
         VerticalLayout {
-            children: Vec::new(), // 子控件已经转移到子树中
+            children: built_children,
             spacing: self.spacing,
             alignment: self.alignment,
             width: self.width,
             height: self.height,
             x: self.x,
             y: self.y,
-            internal_item_tree: self.internal_item_tree,
         }
     }
 
@@ -406,13 +365,43 @@ impl crate::View for VerticalLayout {
         // 布局容器主要处理子控件的排列，而不是窗口级别的属性
     }
 
-    /// ✅ **递归 ItemTree 架构** - 使用构建的子树
+    /// ✅ **静态树展开架构** - 使用 MultiItemTree 包含所有子控件
     ///
-    /// 按照您的模板实现：
-    /// 使用已经构建的子树创建 ItemTree
+    /// 核心理念：在构建期将所有子控件转换为静态 Item 引用，避免运行时动态转换
+    /// 这解决了之前 MultiItemTree 中 visit_children_item 动态转换导致的无限递归
     fn into_item_tree(self) -> Option<i_slint_core::item_tree::ItemTreeRc> {
-        let item = Box::new(self.create_item());
-        Some(crate::item_tree_integration::create_single_item_tree_from_boxed(item))
+        println!(
+            "🎯 VerticalLayout::into_item_tree: Creating MultiItemTree with {} children",
+            self.children.len()
+        );
+
+        // ✅ **关键修复**：使用能够包含多个子控件的 MultiItemTree 架构
+        // 而不是只能包含2个控件的 CompositeItemTree
+
+        if self.children.is_empty() {
+            // 如果没有子控件，使用 CompositeItemTree
+            println!("🎯 VerticalLayout has no children, using CompositeItemTree");
+            let window_item = i_slint_core::items::WindowItem::default();
+            let layout_item = self.create_item_internal();
+            let tree_rc =
+                crate::item_tree_integration::create_composite_item_tree(window_item, layout_item);
+            Some(tree_rc)
+        } else {
+            // 如果有子控件，使用 MultiItemTree 包含所有子控件
+            println!("🎯 VerticalLayout has {} children, using MultiItemTree", self.children.len());
+
+            // 创建 VerticalLayout 控件
+            let layout_item = self.create_item_internal();
+
+            // ✅ **关键修复**：传递已经构建的子控件，避免运行时动态转换
+            let multi_tree = crate::item_tree_integration::create_multi_item_tree_from_wrappers(
+                layout_item,
+                self.children, // 传递已经构建的子控件
+            );
+
+            println!("✅ VerticalLayout::into_item_tree: MultiItemTree created successfully");
+            Some(multi_tree)
+        }
     }
 }
 
