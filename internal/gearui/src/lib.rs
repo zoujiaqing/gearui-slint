@@ -66,6 +66,7 @@ window.set_component(rect.into_component()); // For top-level window
 */
 
 pub mod composed;
+pub mod input;
 pub mod interactive;
 pub mod layout;
 /// Pure Rust UI Controls for Slint
@@ -78,6 +79,7 @@ pub mod layout;
 pub mod primitives;
 
 pub use self::composed::*;
+pub use self::input::*;
 pub use self::interactive::*;
 pub use self::layout::*;
 pub use self::primitives::*;
@@ -104,6 +106,7 @@ pub enum ViewWrapper {
     GroupBox(layout::GroupBox),                     // 阶段1新增
     Clip(primitives::Clip),                         // 阶段1新增
     Opacity(primitives::Opacity),                   // 阶段1新增
+    LineEdit(input::LineEdit),                      // 阶段2新增 - 单行文本输入
     VerticalLayout(VerticalLayout),
     HorizontalLayout(HorizontalLayout),
     GridLayout(GridLayout),
@@ -129,6 +132,7 @@ impl ViewWrapper {
             ViewWrapper::GroupBox(groupbox) => groupbox.into_item_tree(),
             ViewWrapper::Clip(clip) => clip.into_item_tree(),
             ViewWrapper::Opacity(opacity) => opacity.into_item_tree(),
+            ViewWrapper::LineEdit(line_edit) => line_edit.into_item_tree(),
             // 🎯 **关键修复**：布局控件需要先构建完整的嵌套结构
             ViewWrapper::VerticalLayout(layout) => {
                 println!("🎯 ViewWrapper::into_item_tree for VerticalLayout - 先构建嵌套结构");
@@ -177,6 +181,7 @@ impl ViewWrapper {
             ViewWrapper::GroupBox(groupbox) => ViewWrapper::GroupBox(groupbox.build()),
             ViewWrapper::Clip(clip) => ViewWrapper::Clip(clip.build()),
             ViewWrapper::Opacity(opacity) => ViewWrapper::Opacity(opacity.build()),
+            ViewWrapper::LineEdit(line_edit) => ViewWrapper::LineEdit(line_edit.build()),
             ViewWrapper::VerticalLayout(layout) => ViewWrapper::VerticalLayout(layout.build()),
             ViewWrapper::HorizontalLayout(layout) => ViewWrapper::HorizontalLayout(layout.build()),
             ViewWrapper::GridLayout(layout) => ViewWrapper::GridLayout(layout.build()),
@@ -246,6 +251,10 @@ impl ViewWrapper {
             ViewWrapper::Opacity(opacity) => {
                 let item = opacity.create_item();
                 (Box::new(item), crate::primitives::opacity::OpacityItem::static_vtable())
+            }
+            ViewWrapper::LineEdit(line_edit) => {
+                let item = line_edit.create_item();
+                (Box::new(item), crate::input::line_edit::LineEditItem::static_vtable())
             }
             ViewWrapper::VerticalLayout(layout) => {
                 let item = layout.create_item();
@@ -416,6 +425,12 @@ impl From<primitives::Clip> for ViewWrapper {
 impl From<primitives::Opacity> for ViewWrapper {
     fn from(v: primitives::Opacity) -> Self {
         ViewWrapper::Opacity(v)
+    }
+}
+
+impl From<input::LineEdit> for ViewWrapper {
+    fn from(v: input::LineEdit) -> Self {
+        ViewWrapper::LineEdit(v)
     }
 }
 

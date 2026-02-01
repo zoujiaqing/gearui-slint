@@ -32,6 +32,10 @@ path = "src/test_simple.rs"
 name = "gallery_simple"
 path = "src/gallery_simple.rs"
 
+[[bin]]
+name = "test_line_edit"
+path = "src/test_line_edit.rs"
+
 [dependencies]
 i-slint-gearui.workspace = true
 i-slint-core.workspace = true
