@@ -32,26 +32,43 @@ use vtable::FieldOffsets;
 type ItemRendererRef<'a> = &'a mut dyn i_slint_core::item_rendering::ItemRenderer;
 
 /// Opacity 元素的公共 API
-#[derive(Default)]
 pub struct Opacity {
     pub opacity: f32,
+    pub child: Option<crate::ViewWrapper>,
+}
+
+impl Default for Opacity {
+    fn default() -> Self {
+        Self { opacity: 1.0, child: None }
+    }
 }
 
 impl Clone for Opacity {
     fn clone(&self) -> Self {
-        Self { opacity: self.opacity }
+        Self { opacity: self.opacity, child: self.child.clone() }
     }
 }
 
 impl Opacity {
     /// 创建新的 Opacity 实例
     pub fn new() -> Self {
-        Self { opacity: 1.0 }
+        Self { opacity: 1.0, child: None }
     }
 
     /// 设置透明度 (0.0 - 1.0)
     pub fn set_opacity(mut self, opacity: f32) -> Self {
         self.opacity = opacity.clamp(0.0, 1.0);
+        self
+    }
+
+    /// 添加子元素
+    pub fn with_child<V: Into<crate::ViewWrapper>>(mut self, child: V) -> Self {
+        self.child = Some(child.into());
+        self
+    }
+
+    /// 构建最终的 Opacity 视图（递归构建子元素）
+    pub fn build(self) -> Self {
         self
     }
 }

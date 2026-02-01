@@ -93,31 +93,46 @@ fn create_primitives_section() -> VerticalLayout {
                 .with_color(Brush::SolidColor(Color::from_rgb_u8(150, 150, 150))),
         );
 
-    // 颜色渐变示例（使用不同颜色展示）
-    let gradient_title = Text::new()
-        .with_text(SharedString::from("Color Variations"))
+    // Opacity 示例
+    let opacity_title = Text::new()
+        .with_text(SharedString::from("Opacity"))
         .with_font_size(LogicalLength::new(14.0))
         .with_color(Brush::SolidColor(Color::from_rgb_u8(220, 220, 220)));
 
-    let gradient_boxes = HorizontalLayout::new()
+    let opacity_boxes = HorizontalLayout::new()
         .with_spacing(10.0)
         .with_child(
-            Rectangle::new()
-                .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 149, 0)))
-                .with_width(60.0)
-                .with_height(60.0),
+            Opacity::new()
+                .set_opacity(1.0)
+                .with_child(
+                    Rectangle::new()
+                        .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
+                        .with_width(60.0)
+                        .with_height(60.0),
+                )
+                .build(),
         )
         .with_child(
-            Rectangle::new()
-                .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 204, 0)))
-                .with_width(60.0)
-                .with_height(60.0),
+            Opacity::new()
+                .set_opacity(0.7)
+                .with_child(
+                    Rectangle::new()
+                        .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
+                        .with_width(60.0)
+                        .with_height(60.0),
+                )
+                .build(),
         )
         .with_child(
-            Rectangle::new()
-                .with_background(Brush::SolidColor(Color::from_rgb_u8(175, 82, 222)))
-                .with_width(60.0)
-                .with_height(60.0),
+            Opacity::new()
+                .set_opacity(0.4)
+                .with_child(
+                    Rectangle::new()
+                        .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
+                        .with_width(60.0)
+                        .with_height(60.0),
+                )
+                .build(),
         );
 
     // 组合所有基础组件
@@ -129,8 +144,8 @@ fn create_primitives_section() -> VerticalLayout {
         .with_child(rectangles)
         .with_child(text_title)
         .with_child(texts)
-        .with_child(gradient_title)
-        .with_child(gradient_boxes)
+        .with_child(opacity_title)
+        .with_child(opacity_boxes)
 }
 
 /// 第二部分：交互组件（Interactive）
@@ -326,46 +341,31 @@ fn create_layout_section() -> VerticalLayout {
                 .with_height(60.0),
         );
 
-    // HStack + VStack 嵌套示例
-    let nested_title = Text::new()
-        .with_text(SharedString::from("Nested Layouts"))
+    // GroupBox 示例
+    let groupbox_title = Text::new()
+        .with_text(SharedString::from("GroupBox"))
         .with_font_size(LogicalLength::new(14.0))
         .with_color(Brush::SolidColor(Color::from_rgb_u8(220, 220, 220)));
 
-    let nested_layout = HorizontalLayout::new()
+    let groupbox_content = HorizontalLayout::new()
         .with_spacing(10.0)
         .with_child(
-            VerticalLayout::new()
-                .with_spacing(5.0)
-                .with_child(
-                    Rectangle::new()
-                        .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
-                        .with_width(60.0)
-                        .with_height(40.0),
-                )
-                .with_child(
-                    Rectangle::new()
-                        .with_background(Brush::SolidColor(Color::from_rgb_u8(52, 199, 89)))
-                        .with_width(60.0)
-                        .with_height(40.0),
-                ),
+            Rectangle::new()
+                .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
+                .with_width(60.0)
+                .with_height(60.0),
         )
         .with_child(
-            VerticalLayout::new()
-                .with_spacing(5.0)
-                .with_child(
-                    Rectangle::new()
-                        .with_background(Brush::SolidColor(Color::from_rgb_u8(0, 122, 255)))
-                        .with_width(60.0)
-                        .with_height(40.0),
-                )
-                .with_child(
-                    Rectangle::new()
-                        .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 149, 0)))
-                        .with_width(60.0)
-                        .with_height(40.0),
-                ),
+            Rectangle::new()
+                .with_background(Brush::SolidColor(Color::from_rgb_u8(52, 199, 89)))
+                .with_width(60.0)
+                .with_height(60.0),
         );
+
+    let groupbox = GroupBox::new()
+        .set_title(SharedString::from("Settings Group"))
+        .with_child(groupbox_content)
+        .build();
 
     // 组合所有布局组件
     VerticalLayout::new()
@@ -374,8 +374,8 @@ fn create_layout_section() -> VerticalLayout {
         .with_child(create_divider())
         .with_child(grid_title)
         .with_child(grid)
-        .with_child(nested_title)
-        .with_child(nested_layout)
+        .with_child(groupbox_title)
+        .with_child(groupbox)
 }
 
 /// 创建主标题栏

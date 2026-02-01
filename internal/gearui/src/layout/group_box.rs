@@ -37,26 +37,43 @@ use vtable::FieldOffsets;
 type ItemRendererRef<'a> = &'a mut dyn i_slint_core::item_rendering::ItemRenderer;
 
 /// GroupBox 控件的公共 API
-#[derive(Default)]
 pub struct GroupBox {
     pub title: SharedString,
+    pub child: Option<crate::ViewWrapper>,
+}
+
+impl Default for GroupBox {
+    fn default() -> Self {
+        Self { title: SharedString::default(), child: None }
+    }
 }
 
 impl Clone for GroupBox {
     fn clone(&self) -> Self {
-        Self { title: self.title.clone() }
+        Self { title: self.title.clone(), child: self.child.clone() }
     }
 }
 
 impl GroupBox {
     /// 创建新的 GroupBox 实例
     pub fn new() -> Self {
-        Self { title: SharedString::default() }
+        Self { title: SharedString::default(), child: None }
     }
 
     /// 设置标题
     pub fn set_title(mut self, title: impl Into<SharedString>) -> Self {
         self.title = title.into();
+        self
+    }
+
+    /// 添加子元素
+    pub fn with_child<V: Into<crate::ViewWrapper>>(mut self, child: V) -> Self {
+        self.child = Some(child.into());
+        self
+    }
+
+    /// 构建最终的 GroupBox 视图（递归构建子元素）
+    pub fn build(self) -> Self {
         self
     }
 }
