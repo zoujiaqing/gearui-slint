@@ -376,6 +376,49 @@ impl From<GridLayout> for ViewWrapper {
     }
 }
 
+// 阶段1新增组件的 From 实现
+impl From<interactive::Switch> for ViewWrapper {
+    fn from(v: interactive::Switch) -> Self {
+        ViewWrapper::Switch(v)
+    }
+}
+
+impl From<interactive::SwitchComposite> for ViewWrapper {
+    fn from(v: interactive::SwitchComposite) -> Self {
+        ViewWrapper::SwitchComposite(v)
+    }
+}
+
+impl From<composed::ProgressIndicator> for ViewWrapper {
+    fn from(v: composed::ProgressIndicator) -> Self {
+        ViewWrapper::ProgressIndicator(v)
+    }
+}
+
+impl From<composed::Spinner> for ViewWrapper {
+    fn from(v: composed::Spinner) -> Self {
+        ViewWrapper::Spinner(v)
+    }
+}
+
+impl From<layout::GroupBox> for ViewWrapper {
+    fn from(v: layout::GroupBox) -> Self {
+        ViewWrapper::GroupBox(v)
+    }
+}
+
+impl From<primitives::Clip> for ViewWrapper {
+    fn from(v: primitives::Clip) -> Self {
+        ViewWrapper::Clip(v)
+    }
+}
+
+impl From<primitives::Opacity> for ViewWrapper {
+    fn from(v: primitives::Opacity) -> Self {
+        ViewWrapper::Opacity(v)
+    }
+}
+
 use i_slint_core::{
     SharedString, SharedVector,
     accessibility::{AccessibilityAction, SupportedAccessibilityAction},

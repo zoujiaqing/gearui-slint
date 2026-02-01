@@ -1,15 +1,15 @@
 // GearUI 控件画廊 - 全屏展示所有可用组件
 // Gallery of all GearUI components in a full-screen layout
 
-use i_slint_core::graphics::{Brush, Color};
-use i_slint_core::items::{ImageFit, LayoutAlignment, MouseCursor};
-use i_slint_core::lengths::LogicalLength;
 use i_slint_core::SharedString;
-use i_slint_gearui::composed::{Button, ProgressIndicator, Spinner};
-use i_slint_gearui::interactive::{CheckBox, Slider, Switch, TouchArea};
-use i_slint_gearui::layout::{GridLayout, GroupBox, HorizontalLayout, VerticalLayout};
-use i_slint_gearui::primitives::{Clip, Image, Opacity, Rectangle, Text};
+use i_slint_core::graphics::{Brush, Color};
+use i_slint_core::items::LayoutAlignment;
+use i_slint_core::lengths::LogicalLength;
 use i_slint_gearui::RootView;
+use i_slint_gearui::composed::{Button, ProgressIndicator, Spinner};
+use i_slint_gearui::interactive::{CheckBox, Slider, Switch};
+use i_slint_gearui::layout::{GridLayout, GroupBox, HorizontalLayout, VerticalLayout};
+use i_slint_gearui::primitives::{Opacity, Rectangle, Text};
 
 /// 创建标题文本
 fn create_title(title: &str) -> Text {
@@ -17,8 +17,6 @@ fn create_title(title: &str) -> Text {
         .with_text(SharedString::from(title))
         .with_font_size(LogicalLength::new(16.0))
         .with_color(Brush::SolidColor(Color::from_rgb_u8(255, 255, 255)))
-        .with_horizontal_alignment(i_slint_core::items::TextHorizontalAlignment::Left)
-        .with_vertical_alignment(i_slint_core::items::TextVerticalAlignment::Center)
 }
 
 /// 创建描述文本
@@ -34,13 +32,6 @@ fn create_divider() -> Rectangle {
     Rectangle::new()
         .with_background(Brush::SolidColor(Color::from_rgb_u8(60, 60, 60)))
         .with_height(1.0)
-}
-
-/// 创建组件容器背景
-fn create_section_background() -> Rectangle {
-    Rectangle::new()
-        .with_background(Brush::SolidColor(Color::from_rgb_u8(40, 40, 45)))
-        .with_border_radius(8.0)
 }
 
 /// 第一部分：基础组件（Primitives）
@@ -60,22 +51,19 @@ fn create_primitives_section() -> VerticalLayout {
             Rectangle::new()
                 .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
                 .with_width(80.0)
-                .with_height(60.0)
-                .with_border_radius(4.0),
+                .with_height(60.0),
         )
         .with_child(
             Rectangle::new()
                 .with_background(Brush::SolidColor(Color::from_rgb_u8(52, 199, 89)))
                 .with_width(80.0)
-                .with_height(60.0)
-                .with_border_radius(8.0),
+                .with_height(60.0),
         )
         .with_child(
             Rectangle::new()
                 .with_background(Brush::SolidColor(Color::from_rgb_u8(0, 122, 255)))
                 .with_width(80.0)
-                .with_height(60.0)
-                .with_border_radius(12.0),
+                .with_height(60.0),
         );
 
     // Text 示例
@@ -115,7 +103,7 @@ fn create_primitives_section() -> VerticalLayout {
         .with_spacing(10.0)
         .with_child(
             Opacity::new()
-                .with_opacity(1.0)
+                .set_opacity(1.0)
                 .with_child(
                     Rectangle::new()
                         .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
@@ -126,7 +114,7 @@ fn create_primitives_section() -> VerticalLayout {
         )
         .with_child(
             Opacity::new()
-                .with_opacity(0.7)
+                .set_opacity(0.7)
                 .with_child(
                     Rectangle::new()
                         .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
@@ -137,7 +125,7 @@ fn create_primitives_section() -> VerticalLayout {
         )
         .with_child(
             Opacity::new()
-                .with_opacity(0.4)
+                .set_opacity(0.4)
                 .with_child(
                     Rectangle::new()
                         .with_background(Brush::SolidColor(Color::from_rgb_u8(255, 59, 48)))
@@ -226,19 +214,9 @@ fn create_interactive_section() -> VerticalLayout {
 
     let sliders = VerticalLayout::new()
         .with_spacing(8.0)
+        .with_child(Slider::new().set_value(30.0).set_minimum(0.0).set_maximum(100.0).set_step(1.0))
         .with_child(
-            Slider::new()
-                .set_value(30.0)
-                .set_minimum(0.0)
-                .set_maximum(100.0)
-                .set_step(1.0),
-        )
-        .with_child(
-            Slider::new()
-                .set_value(70.0)
-                .set_minimum(0.0)
-                .set_maximum(100.0)
-                .set_step(1.0),
+            Slider::new().set_value(70.0).set_minimum(0.0).set_maximum(100.0).set_step(1.0),
         );
 
     // Switch
@@ -364,7 +342,7 @@ fn create_layout_section() -> VerticalLayout {
         );
 
     let groupbox = GroupBox::new()
-        .with_title(SharedString::from("Settings Group"))
+        .set_title(SharedString::from("Settings Group"))
         .with_child(groupbox_content);
 
     // 组合所有布局组件
@@ -408,15 +386,11 @@ fn create_main_layout() -> VerticalLayout {
     let layout = create_layout_section();
 
     // 左右两列布局
-    let left_column = VerticalLayout::new()
-        .with_spacing(30.0)
-        .with_child(primitives)
-        .with_child(composed);
+    let left_column =
+        VerticalLayout::new().with_spacing(30.0).with_child(primitives).with_child(composed);
 
-    let right_column = VerticalLayout::new()
-        .with_spacing(30.0)
-        .with_child(interactive)
-        .with_child(layout);
+    let right_column =
+        VerticalLayout::new().with_spacing(30.0).with_child(interactive).with_child(layout);
 
     let content = HorizontalLayout::new()
         .with_spacing(30.0)
